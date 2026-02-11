@@ -17,14 +17,29 @@ service cloud.firestore {
       allow read, write: if isAuthenticated() && request.auth.uid == userId;
     }
 
-    // Rules for 'pedidos' collection
-    match /pedidos/{pedidoId} {
-      allow read, create: if isAuthenticated(); // Users can create orders
-      allow update: if isAuthenticated(); // Drivers/Admin update status
+    // Rules for 'orders' collection (matches AppContext)
+    match /orders/{orderId} {
+      allow read, create: if isAuthenticated();
+      allow update: if isAuthenticated();
     }
 
-    // Rules for 'chat' messages
-    match /chats/{chatId}/messages/{messageId} {
+    // Rules for 'products' collection (Catalog)
+    match /products/{productId} {
+      allow read: if true; // Public catalog
+      allow write: if isAuthenticated(); // Merchant/Admin
+    }
+
+    // Rules for 'chats' collection
+    match /chats/{chatId} {
+      allow read, write: if isAuthenticated();
+      
+      match /messages/{messageId} {
+        allow read, write: if isAuthenticated();
+      }
+    }
+    
+    // Rules for 'transactions' collection
+    match /transactions/{txId} {
       allow read, write: if isAuthenticated();
     }
     
