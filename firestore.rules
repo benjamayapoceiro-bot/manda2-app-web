@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user is admin (check custom claim or specific email)
+    // For now, we'll allow based on collections, but you should implement role-based access
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.email == "admin@manda2.com"; // EXAMPLE
+    }
+
+    // Rules for 'users' collection
+    match /users/{userId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Rules for 'pedidos' collection
+    match /pedidos/{pedidoId} {
+      allow read, create: if isAuthenticated(); // Users can create orders
+      allow update: if isAuthenticated(); // Drivers/Admin update status
+    }
+
+    // Rules for 'chat' messages
+    match /chats/{chatId}/messages/{messageId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Default rule: deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

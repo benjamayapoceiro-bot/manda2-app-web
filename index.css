@@ -1,0 +1,14 @@
+/* Manda2 - Base Styles */
+/* Tailwind is loaded via CDN in index.html, this file is for custom overrides */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', 'Inter', 'Manrope', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -5,7 +5,7 @@ import { useApp } from '../context/AppContext';
 const BusinessDashboard: React.FC = () => {
   const { orders, updateOrderStatus, formatPrice } = useApp();
   const [showSettings, setShowSettings] = useState(false);
-  
+
   // Filter orders relevant to business
   const activeOrders = orders.filter(o => ['pending', 'preparing'].includes(o.status));
   const completedOrders = orders.filter(o => o.status === 'delivered');
@@ -23,33 +23,48 @@ const BusinessDashboard: React.FC = () => {
             <p className="text-xs text-gray-400 font-medium">Restaurante El Patio</p>
           </div>
           <div className="relative">
-            <button 
+            <button
               onClick={() => setShowSettings(!showSettings)}
               className="flex size-10 items-center justify-center rounded-full bg-[#27272a] text-gray-300 hover:text-white transition-colors"
             >
               <span className="material-symbols-outlined text-[24px]">settings</span>
             </button>
-            
+
             {showSettings && (
-                <div className="absolute top-12 right-0 z-50 bg-[#18181b] rounded-xl shadow-xl w-48 border border-white/10 overflow-hidden" onClick={() => setShowSettings(false)}>
-                  <Link to="/wallet/merchant" className="block px-4 py-3 text-sm hover:bg-white/5 border-b border-white/5 text-gray-200">
-                    <div className="flex items-center gap-2">
-                         <span className="material-symbols-outlined text-[#f46325]">account_balance_wallet</span>
-                         Billetera
-                    </div>
-                  </Link>
-                  <Link to="/legal/merchant-agreement" className="block px-4 py-3 text-sm hover:bg-white/5 border-b border-white/5 text-gray-200">
-                    Acuerdo Comercial
-                  </Link>
-                  <button className="w-full text-left px-4 py-3 text-sm hover:bg-white/5 text-red-500 font-medium">
-                    Cerrar Sesión
-                  </button>
-                </div>
+              <div className="absolute top-12 right-0 z-50 bg-[#18181b] rounded-xl shadow-xl w-48 border border-white/10 overflow-hidden" onClick={() => setShowSettings(false)}>
+                <Link to="/wallet/merchant" className="block px-4 py-3 text-sm hover:bg-white/5 border-b border-white/5 text-gray-200">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[#f46325]">account_balance_wallet</span>
+                    Billetera
+                  </div>
+                </Link>
+                <button
+                  onClick={() => {
+                    const backendUrl = "https://node-backend--benjamayapoceir.replit.app";
+                    // Usamos user.uid o un ID fijo si no hay user
+                    const comercioId = "default-merchant-id";
+                    // Nota: Idealmente usar user.uid del contexto si estuviéramos logueados como comercio
+                    window.location.href = `${backendUrl}/api/mp/auth?comercioId=${comercioId}`;
+                  }}
+                  className="w-full text-left px-4 py-3 text-sm hover:bg-white/5 border-b border-white/5 text-[#009ee3] font-medium"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined">link</span>
+                    Vincular Mercado Pago
+                  </div>
+                </button>
+                <Link to="/legal/merchant-agreement" className="block px-4 py-3 text-sm hover:bg-white/5 border-b border-white/5 text-gray-200">
+                  Acuerdo Comercial
+                </Link>
+                <button className="w-full text-left px-4 py-3 text-sm hover:bg-white/5 text-red-500 font-medium">
+                  Cerrar Sesión
+                </button>
+              </div>
             )}
           </div>
         </div>
       </nav>
-      
+
       <main className="max-w-md mx-auto pb-24">
         <div className="p-4">
           <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-[#18181b] p-5 shadow-sm">
@@ -66,7 +81,7 @@ const BusinessDashboard: React.FC = () => {
             </label>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-4 px-4">
           <Link to="/wallet/merchant" className="flex flex-col gap-2 rounded-xl p-5 bg-[#18181b] border border-white/10 shadow-sm hover:border-[#f46325]/50 transition-colors cursor-pointer group">
             <div className="flex items-center justify-between">
@@ -83,17 +98,17 @@ const BusinessDashboard: React.FC = () => {
             <p className="text-2xl font-bold leading-tight text-white">{activeOrders.length}</p>
           </div>
         </div>
-        
+
         <div className="flex items-center justify-between px-4 pb-2 pt-8">
           <h2 className="text-xl font-bold tracking-tight text-white">Pedidos Activos</h2>
         </div>
-        
+
         <div className="flex flex-col gap-3 px-4">
           {activeOrders.length === 0 ? (
-             <div className="text-center py-10 opacity-50 text-gray-500">
-               <span className="material-symbols-outlined text-4xl mb-2">check_circle</span>
-               <p>Todo al día. No hay pedidos pendientes.</p>
-             </div>
+            <div className="text-center py-10 opacity-50 text-gray-500">
+              <span className="material-symbols-outlined text-4xl mb-2">check_circle</span>
+              <p>Todo al día. No hay pedidos pendientes.</p>
+            </div>
           ) : (
             activeOrders.map(order => (
               <div key={order.id} className="flex flex-col gap-4 rounded-xl bg-[#18181b] p-4 border border-white/10 shadow-sm">
@@ -110,10 +125,10 @@ const BusinessDashboard: React.FC = () => {
                     <p className="text-xs text-gray-500 mt-1">{order.items.map(i => i.name).join(', ')}</p>
                   </div>
                 </div>
-                
+
                 {order.status === 'pending' ? (
                   <div className="flex gap-3">
-                    <button 
+                    <button
                       onClick={() => updateOrderStatus(order.id, 'preparing')}
                       className="flex-1 flex items-center justify-center gap-2 rounded-lg h-11 bg-[#2b8cee] text-white text-sm font-bold transition-transform active:scale-95 hover:bg-blue-600"
                     >
@@ -126,7 +141,7 @@ const BusinessDashboard: React.FC = () => {
                   </div>
                 ) : (
                   <div className="flex gap-3">
-                    <button 
+                    <button
                       onClick={() => updateOrderStatus(order.id, 'ready')}
                       className="flex-1 flex items-center justify-center gap-2 rounded-lg h-11 bg-emerald-600 text-white text-sm font-bold transition-transform active:scale-95 hover:bg-emerald-500"
                     >
@@ -140,7 +155,7 @@ const BusinessDashboard: React.FC = () => {
           )}
         </div>
       </main>
-      
+
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#09090b]/90 backdrop-blur-xl border-t border-white/10">
         <div className="max-w-md mx-auto flex justify-around items-center h-20 pb-4">
           <button className="flex flex-col items-center gap-1 text-[#2b8cee]">

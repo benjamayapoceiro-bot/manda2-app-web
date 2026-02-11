@@ -303,8 +303,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       merchant: 'Mi Negocio Online',
       items: cartItems,
       total: total,
-      status: 'pending',
-      vehicleType: 'moto',
+      status: 'pending' as OrderStatus,
+      vehicleType: 'moto' as VehicleType,
       riderFee: riderShare,
       platformFee: platformShare,
       merchantEarnings: merchantShare,
@@ -319,6 +319,40 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // Set active locally (optional, as snapshot will catch it)
     setActiveOrder({ ...orderData, id: orderRef.id } as Order);
+
+    // --- MERCADO PAGO INTEGRATION ---
+    if (paymentMethod === 'mercadopago') {
+      try {
+        const backendUrl = "https://node-backend--benjamayapoceir.replit.app";
+        const comercioId = "default-merchant-id"; // Debe coincidir con el usado en vinculación
+
+        const response = await fetch(`${backendUrl}/api/mp/create-preference`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            comercioId,
+            items: cartItems.map(item => ({
+              id: item.id,
+              title: item.name,
+              unit_price: item.price,
+              quantity: 1, // Asumiendo cantidad 1 por ahora
+              currency_id: "ARS"
+            })),
+            envio: deliveryFee
+          })
+        });
+
+        if (!response.ok) throw new Error('Error creando preferencia MP');
+
+        const data = await response.json();
+        if (data.init_point) {
+          window.location.href = data.init_point;
+        }
+      } catch (error) {
+        console.error("Pago Error:", error);
+        alert("Error al iniciar pago. Intenta efectivo.");
+      }
+    }
   };
 
   const updateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
