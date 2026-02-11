@@ -7,6 +7,7 @@ const AuthScreen: React.FC = () => {
   const navigate = useNavigate();
 
   const [authType, setAuthType] = useState<'login' | 'register'>('login');
+  const [selectedRole, setSelectedRole] = useState<'client' | 'merchant' | 'rider'>('client');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -35,7 +36,7 @@ const AuthScreen: React.FC = () => {
       if (authType === 'login') {
         await login(email, password);
       } else {
-        await register(email, password);
+        await register(email, password, selectedRole);
       }
       navigate('/home');
     } catch (err: any) {
@@ -66,33 +67,75 @@ const AuthScreen: React.FC = () => {
         </div>
 
         <div className="w-full max-w-[400px] flex flex-col gap-5">
-          <div className="flex p-1 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full shadow-sm">
-            <label className="flex-1 cursor-pointer">
-              <input
-                type="radio"
-                name="auth_type"
-                value="login"
-                checked={authType === 'login'}
-                onChange={() => setAuthType('login')}
-                className="peer sr-only"
-              />
-              <div className="flex items-center justify-center py-2.5 px-4 rounded-full text-sm font-bold text-gray-500 dark:text-gray-400 transition-all peer-checked:bg-[#f46325] peer-checked:text-white peer-checked:shadow-md">
-                Entrar
+          <div className="flex flex-col gap-4">
+            {/* Auth Type Selector */}
+            <div className="flex p-1 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full shadow-sm">
+              <label className="flex-1 cursor-pointer">
+                <input
+                  type="radio"
+                  name="auth_type"
+                  value="login"
+                  checked={authType === 'login'}
+                  onChange={() => setAuthType('login')}
+                  className="peer sr-only"
+                />
+                <div className="flex items-center justify-center py-2.5 px-4 rounded-full text-sm font-bold text-gray-500 dark:text-gray-400 transition-all peer-checked:bg-[#f46325] peer-checked:text-white peer-checked:shadow-md">
+                  Entrar
+                </div>
+              </label>
+              <label className="flex-1 cursor-pointer">
+                <input
+                  type="radio"
+                  name="auth_type"
+                  value="register"
+                  checked={authType === 'register'}
+                  onChange={() => setAuthType('register')}
+                  className="peer sr-only"
+                />
+                <div className="flex items-center justify-center py-2.5 px-4 rounded-full text-sm font-bold text-gray-500 dark:text-gray-400 transition-all peer-checked:bg-[#f46325] peer-checked:text-white peer-checked:shadow-md">
+                  Crear cuenta
+                </div>
+              </label>
+            </div>
+
+            {/* Role Selector (Only for Register) */}
+            {authType === 'register' && (
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole('client')}
+                  className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${selectedRole === 'client'
+                    ? 'bg-[#f46325]/10 border-[#f46325] text-[#f46325]'
+                    : 'bg-white dark:bg-white/5 border-transparent text-gray-500'
+                    }`}
+                >
+                  <span className="material-symbols-outlined mb-1">person</span>
+                  <span className="text-xs font-bold">Cliente</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole('merchant')}
+                  className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${selectedRole === 'merchant'
+                    ? 'bg-[#f46325]/10 border-[#f46325] text-[#f46325]'
+                    : 'bg-white dark:bg-white/5 border-transparent text-gray-500'
+                    }`}
+                >
+                  <span className="material-symbols-outlined mb-1">storefront</span>
+                  <span className="text-xs font-bold">Comercio</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole('rider')}
+                  className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${selectedRole === 'rider'
+                    ? 'bg-[#f46325]/10 border-[#f46325] text-[#f46325]'
+                    : 'bg-white dark:bg-white/5 border-transparent text-gray-500'
+                    }`}
+                >
+                  <span className="material-symbols-outlined mb-1">two_wheeler</span>
+                  <span className="text-xs font-bold">Rider</span>
+                </button>
               </div>
-            </label>
-            <label className="flex-1 cursor-pointer">
-              <input
-                type="radio"
-                name="auth_type"
-                value="register"
-                checked={authType === 'register'}
-                onChange={() => setAuthType('register')}
-                className="peer sr-only"
-              />
-              <div className="flex items-center justify-center py-2.5 px-4 rounded-full text-sm font-bold text-gray-500 dark:text-gray-400 transition-all peer-checked:bg-[#f46325] peer-checked:text-white peer-checked:shadow-md">
-                Crear cuenta
-              </div>
-            </label>
+            )}
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-2">
@@ -189,10 +232,6 @@ const AuthScreen: React.FC = () => {
               <Link to="/legal/terms" className="text-[#181311] dark:text-white font-semibold underline decoration-[#f46325]/50 underline-offset-2 ml-1">Política de Privacidad</Link>.
             </p>
             <div className="pt-2">
-              <Link to="/rider" className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-[#f46325]/10 text-[#f46325] text-sm font-bold hover:bg-[#f46325]/20 transition-colors">
-                <span className="material-symbols-outlined text-[18px] mr-2">two_wheeler</span>
-                Quiero ser repartidor
-              </Link>
             </div>
           </div>
         </div>

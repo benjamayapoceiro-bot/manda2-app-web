@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { AppProvider } from './context/AppContext';
+import { HashRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { AppProvider, useApp, UserRole } from './context/AppContext';
 import WelcomeScreen from './screens/WelcomeScreen';
 import AuthScreen from './screens/AuthScreen';
 import HomeScreen from './screens/HomeScreen';
@@ -15,6 +15,28 @@ import AdminDashboardScreen from './screens/AdminDashboardScreen';
 import ChatScreen from './screens/ChatScreen';
 import LegalScreen from './screens/LegalScreen';
 import WalletScreen from './screens/WalletScreen';
+
+// Componente para proteger rutas
+const ProtectedRoute: React.FC<{ children: React.ReactNode, roles?: UserRole[] }> = ({ children, roles }) => {
+  const { user, loadingAuth } = useApp();
+
+  if (loadingAuth) {
+    return <div className="min-h-screen flex items-center justify-center bg-[#f8f6f5] dark:bg-[#221510] text-[#f46325]">
+      <span className="material-symbols-outlined animate-spin text-4xl">progress_activity</span>
+    </div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (roles && user.role && !roles.includes(user.role)) {
+    // Si tiene rol pero no el requerido, redirigir a home o dashboard correspondiente
+    return <Navigate to="/home" replace />;
+  }
+
+  return <>{children}</>;
+};
 
 // PWA Install Prompt Component
 const InstallPrompt = () => {
@@ -81,14 +103,14 @@ const NavigationWrapper: React.FC<{ children: React.ReactNode }> = ({ children }
       {children}
       <InstallPrompt />
       <div className="fixed bottom-4 right-4 z-[100]">
-        <button 
+        <button
           onClick={() => setIsOpen(!isOpen)}
           className="bg-[#f46325] text-white p-3 rounded-full shadow-lg shadow-orange-500/20 hover:bg-orange-600 transition-colors"
         >
           <span className="material-symbols-outlined">{isOpen ? 'close' : 'menu'}</span>
         </button>
       </div>
-      
+
       {isOpen && (
         <div className="fixed inset-0 z-[99] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#18181b] border border-white/10 rounded-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto shadow-2xl">
@@ -128,18 +150,27 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<WelcomeScreen />} />
             <Route path="/auth" element={<AuthScreen />} />
+
+            {/* Rutas Públicas / Cliente */}
             <Route path="/home" element={<HomeScreen />} />
             <Route path="/merchant" element={<MerchantScreen />} />
             <Route path="/cart" element={<CartScreen />} />
-            <Route path="/tracking" element={<OrderTrackingScreen />} />
-            <Route path="/rider" element={<RiderScreen />} />
-            <Route path="/business" element={<BusinessDashboard />} />
-            <Route path="/menu" element={<MenuScreen />} />
-            <Route path="/network" element={<NetworkScreen />} />
-            <Route path="/admin" element={<AdminDashboardScreen />} />
-            <Route path="/chat/:id" element={<ChatScreen />} />
+            <Route path="/tracking" element={<ProtectedRoute><OrderTrackingScreen /></ProtectedRoute>} />
+            <Route path="/chat/:id" element={<ProtectedRoute><ChatScreen /></ProtectedRoute>} />
             <Route path="/legal/:docId" element={<LegalScreen />} />
-            <Route path="/wallet/:type" element={<WalletScreen />} />
+
+            {/* Rutas Repartidor */}
+            <Route path="/rider" element={<ProtectedRoute roles={['rider', 'admin']}><RiderScreen /></ProtectedRoute>} />
+            <Route path="/wallet/rider" element={<ProtectedRoute roles={['rider', 'admin']}><WalletScreen /></ProtectedRoute>} />
+
+            {/* Rutas Comercio */}
+            <Route path="/business" element={<ProtectedRoute roles={['merchant', 'admin']}><BusinessDashboard /></ProtectedRoute>} />
+            <Route path="/menu" element={<ProtectedRoute roles={['merchant', 'admin']}><MenuScreen /></ProtectedRoute>} />
+            <Route path="/wallet/merchant" element={<ProtectedRoute roles={['merchant', 'admin']}><WalletScreen /></ProtectedRoute>} />
+
+            {/* Rutas Admin */}
+            <Route path="/admin" element={<ProtectedRoute roles={['admin']}><AdminDashboardScreen /></ProtectedRoute>} />
+            <Route path="/network" element={<ProtectedRoute roles={['admin']}><NetworkScreen /></ProtectedRoute>} />
           </Routes>
         </NavigationWrapper>
       </HashRouter>

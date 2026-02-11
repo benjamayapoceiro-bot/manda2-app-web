@@ -30,11 +30,14 @@ export type OrderStatus = 'pending' | 'preparing' | 'ready' | 'on_way' | 'delive
 export type VehicleType = 'bici' | 'moto' | 'auto';
 
 // Local definition of User to replace firebase/auth User
+export type UserRole = 'client' | 'merchant' | 'rider' | 'admin';
+
 export interface User {
   uid: string;
   email: string | null;
   displayName?: string | null;
   photoURL?: string | null;
+  role?: UserRole;
 }
 
 export interface Product {
@@ -111,7 +114,7 @@ interface AppContextType {
   loadingAuth: boolean;
   login: (email: string, pass: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
-  register: (email: string, pass: string) => Promise<void>;
+  register: (email: string, pass: string, role?: UserRole) => Promise<void>;
   logout: () => Promise<void>;
 
   merchants: Merchant[];
@@ -157,13 +160,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // --- AUTHENTICATION ---
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
+        // Fetch user role from Firestore
+        let role: UserRole = 'client';
+        try {
+          // Hardcoded Admin
+          if (firebaseUser.email === 'benjamayapoceir@gmail.com') {
+            role = 'admin';
+          } else {
+            const userDoc = await import('firebase/firestore').then(mod => mod.getDoc(mod.doc(db, 'users', firebaseUser.uid)));
+            if (userDoc.exists()) {
+              role = userDoc.data().role as UserRole || 'client';
+            }
+          }
+        } catch (e) {
+          console.error("Error fetching user role:", e);
+        }
+
         setUser({
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           displayName: firebaseUser.displayName,
-          photoURL: firebaseUser.photoURL
+          photoURL: firebaseUser.photoURL,
+          role: role
         });
       } else {
         setUser(null);
@@ -180,10 +200,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
+    // Google login logic might need to check/create user doc in Firestore too
   };
 
-  const register = async (email: string, pass: string) => {
-    await createUserWithEmailAndPassword(auth, email, pass);
+  const register = async (email: string, pass: string, role: UserRole = 'client') => {
+    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+    if (userCred.user) {
+      await setDoc(doc(db, 'users', userCred.user.uid), {
+        email: email,
+        role: role,
+        createdAt: new Date()
+      });
+
+      // Update local state immediately (optional, as listener will catch it but listener is async)
+      setUser(prev => prev ? { ...prev, role } : null);
+    }
   };
 
   const logout = async () => {
