@@ -42,6 +42,12 @@ service cloud.firestore {
     match /transactions/{txId} {
       allow read, write: if isAuthenticated();
     }
+
+    // Rules for 'merchants' collection
+    match /merchants/{merchantId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
     
     // Default rule: deny everything else
     match /{document=**} {

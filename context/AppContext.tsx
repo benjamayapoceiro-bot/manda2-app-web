@@ -88,6 +88,18 @@ export interface Order {
   paymentMethod?: 'mercadopago' | 'cash';
 }
 
+export interface Merchant {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  rating?: number;
+  deliveryTime?: string;
+  deliveryFee?: number;
+  category: string;
+  address?: string;
+}
+
 export interface PaymentAliases {
   platform: string;
   rider: string;
@@ -102,6 +114,7 @@ interface AppContextType {
   register: (email: string, pass: string) => Promise<void>;
   logout: () => Promise<void>;
 
+  merchants: Merchant[];
   products: Product[];
   orders: Order[];
   activeOrder: Order | null;
@@ -128,6 +141,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [user, setUser] = useState<User | null>(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
 
+  const [merchants, setMerchants] = useState<Merchant[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [activeOrder, setActiveOrder] = useState<Order | null>(null);
@@ -245,6 +259,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         } as Transaction;
       });
       setTransactions(txData);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // 5. Merchants
+  useEffect(() => {
+    const q = query(collection(db, 'merchants')); // Make sure 'merchants' exists in Firestore rules!
+    const unsubscribe = onSnapshot(q, (snapshot: QuerySnapshot<DocumentData>) => {
+      const merchantsData = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({ id: doc.id, ...doc.data() } as Merchant));
+      setMerchants(merchantsData);
     });
     return () => unsubscribe();
   }, []);
@@ -437,6 +461,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       loginWithGoogle,
       register,
       logout,
+      merchants,
       products,
       orders,
       activeOrder,

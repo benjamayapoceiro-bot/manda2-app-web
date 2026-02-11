@@ -3,12 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 const HomeScreen: React.FC = () => {
-  const { user, logout } = useApp();
+  const { user, logout, merchants } = useApp();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-      await logout();
-      navigate('/auth');
+    await logout();
+    navigate('/auth');
   }
 
   return (
@@ -17,7 +17,7 @@ const HomeScreen: React.FC = () => {
         <div className="flex items-center justify-between px-4 pt-12 pb-2">
           <div className="flex flex-col flex-1 min-w-0 mr-4">
             <span className="text-xs font-medium text-[#f46325] uppercase tracking-wider mb-0.5">
-                {user ? `Hola, ${user.email?.split('@')[0]}` : 'Entregar en'}
+              {user ? `Hola, ${user.email?.split('@')[0]}` : 'Entregar en'}
             </span>
             <button className="group flex items-center gap-1.5 text-left max-w-full">
               <span className="material-symbols-outlined text-[#f46325] text-[20px] filled">location_on</span>
@@ -26,13 +26,13 @@ const HomeScreen: React.FC = () => {
             </button>
           </div>
           {user ? (
-             <button onClick={handleLogout} className="relative p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
-                <span className="material-symbols-outlined text-[#181311] dark:text-white text-[24px]">logout</span>
-             </button>
+            <button onClick={handleLogout} className="relative p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+              <span className="material-symbols-outlined text-[#181311] dark:text-white text-[24px]">logout</span>
+            </button>
           ) : (
-             <Link to="/auth" className="relative p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
-               <span className="material-symbols-outlined text-[#181311] dark:text-white text-[24px]">login</span>
-             </Link>
+            <Link to="/auth" className="relative p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+              <span className="material-symbols-outlined text-[#181311] dark:text-white text-[24px]">login</span>
+            </Link>
           )}
         </div>
         <div className="px-4 py-2">
@@ -44,7 +44,7 @@ const HomeScreen: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       <main className="flex flex-col gap-8 pt-6">
         <section className="flex flex-col gap-3">
           <div className="flex items-center justify-between px-4">
@@ -84,14 +84,14 @@ const HomeScreen: React.FC = () => {
             </button>
           </div>
         </section>
-        
+
         <section className="overflow-x-auto no-scrollbar px-4 pb-2">
           <div className="flex gap-4">
             <div className="min-w-[300px] h-[160px] rounded-xl relative overflow-hidden flex-shrink-0 bg-[#FFF5F1]">
               <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=400')] bg-cover bg-center opacity-20"></div>
               <div className="relative z-10 p-5 h-full flex flex-col justify-center items-start">
                 <span className="bg-[#f46325] text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider mb-2">Oferta Limitada</span>
-                <h2 className="text-2xl font-extrabold text-[#181311] leading-tight">50% DTO<br/>Primer Pedido</h2>
+                <h2 className="text-2xl font-extrabold text-[#181311] leading-tight">50% DTO<br />Primer Pedido</h2>
                 <p className="text-sm text-gray-600 font-medium mt-1">Usa el código: HOLA50</p>
               </div>
               <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWVmC7pjXV1-EkxISY3-rfGINIL951MDnaUoUNWlVgAwG_UG0jWtdqci3nU6u3K2C4S6n5x06kqWLWtU0zmN39tNqpsWXssAUmJ48lVZfSn0TzviSAd_1gPmSj6Ck4OVj4V-o8-a1dpJUVKa4zZ4AWjm_w72IXbWIdarOcH0GLYXrzm5Kf0TaUXREr-3UWsufMGU3PRBBxm0hf9Ws9CmkVQ_VDS8Bl6DfXIHcChCGPtPwyXB1DUt5MLe4znfnkQYWaVbCmUB2ituyU" alt="Promo hamburguesa" className="absolute -right-8 -bottom-8 w-40 h-40 object-cover rounded-full border-4 border-white dark:border-[#2f221d] shadow-lg" />
@@ -100,14 +100,14 @@ const HomeScreen: React.FC = () => {
               <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=400')] bg-cover bg-center opacity-20"></div>
               <div className="relative z-10 p-5 h-full flex flex-col justify-center items-start">
                 <span className="bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider mb-2">Envío Gratis</span>
-                <h2 className="text-2xl font-extrabold text-[#181311] leading-tight">Opciones<br/>Saludables</h2>
+                <h2 className="text-2xl font-extrabold text-[#181311] leading-tight">Opciones<br />Saludables</h2>
                 <p className="text-sm text-gray-600 font-medium mt-1">En ensaladas seleccionadas</p>
               </div>
               <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCz5gVZ4crxVgcDew0t9wfNT5Io0hQcGQqA5cPY8rZ-LAep_II4pGGAcFLqPaX832rNRIE5qxhYKgyUobAtChLEYiOM0fA460HBufG9jWr2UFov5shgS9lGTfqYonIrSDd-vBYsi5XZDVKzQ9Puc2_0x56qyof-4S8D7-FuY_sC-s1F-ixdyFW93rrH0FLnQjgdCn_D33qm8DwnKnqC6ouwbF2yoR8oapU8A685Qf8kKyO_xGSbHPy1V9j2jltEsdhGKZZYcS3tQNd" alt="Ensalada saludable" className="absolute -right-8 -bottom-8 w-40 h-40 object-cover rounded-full border-4 border-white dark:border-[#2f221d] shadow-lg" />
             </div>
           </div>
         </section>
-        
+
         <section className="flex flex-col gap-4">
           <div className="flex items-center justify-between px-4">
             <h3 className="font-bold text-lg text-[#181311] dark:text-white">Favoritos Cercanos</h3>
@@ -161,44 +161,41 @@ const HomeScreen: React.FC = () => {
             </div>
           </div>
         </section>
-        
-        <section className="flex flex-col gap-4 px-4">
+
+        <section className="flex flex-col gap-4 px-4 min-h-[200px]">
           <h3 className="font-bold text-lg text-[#181311] dark:text-white">Todos los Comercios</h3>
-          <div className="w-full bg-white dark:bg-[#2f221d] rounded-2xl p-3 shadow-sm flex gap-4 items-center">
-            <div className="w-24 h-24 flex-shrink-0 rounded-xl bg-gray-100 dark:bg-gray-800 bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAmYPzPhL2qzpqwtNtm3Mk3rKOug9wpK9hZbWeCGHvast3OZX25XIQd4WcOgrCv1NngShTOaNcdx8ljRH_p37kVNuXrX9UwHJ13-SCjIhIVYsf_HWUohVjhiYpK09-Z3HWG9oWwFbQvlIACbn3wbZWWrOeiS4f-DBvJtc79RTZnOsnpvkKxRAiMFSdJ_L27OeR5RTz0GiGsqVXBf8y0iq1MIWgxVjmleBCgd9YS7txGEjRX2ZhyZ3URnKCkg9Rcax03jnV7vNtpAmle')" }}></div>
-            <div className="flex flex-col flex-1 gap-1">
-              <div className="flex justify-between items-start">
-                <h4 className="font-bold text-base">La Trattoria</h4>
-                <div className="flex items-center gap-1 text-[#f46325] text-sm font-bold bg-[#f46325]/10 px-1.5 py-0.5 rounded-md">
-                  <span className="material-symbols-outlined text-[14px] filled">star</span> 4.7
+
+          {merchants.length === 0 ? (
+            <div className="flex flex-col items-center justify-center p-8 text-center bg-white dark:bg-[#2f221d] rounded-2xl shadow-sm">
+              <span className="material-symbols-outlined text-4xl text-gray-300 mb-2">storefront</span>
+              <p className="text-gray-500 font-medium">No hay comercios disponibles aún.</p>
+              <p className="text-sm text-gray-400">¡Sé el primero en unirte!</p>
+            </div>
+          ) : (
+            merchants.map(merchant => (
+              <div key={merchant.id} onClick={() => navigate('/merchant')} className="w-full bg-white dark:bg-[#2f221d] rounded-2xl p-3 shadow-sm flex gap-4 items-center cursor-pointer hover:shadow-md transition-shadow">
+                <div className="w-24 h-24 flex-shrink-0 rounded-xl bg-gray-100 dark:bg-gray-800 bg-cover bg-center" style={{ backgroundImage: `url('${merchant.image || "https://via.placeholder.com/150"}')` }}></div>
+                <div className="flex flex-col flex-1 gap-1">
+                  <div className="flex justify-between items-start">
+                    <h4 className="font-bold text-base">{merchant.name}</h4>
+                    {merchant.rating && (
+                      <div className="flex items-center gap-1 text-[#f46325] text-sm font-bold bg-[#f46325]/10 px-1.5 py-0.5 rounded-md">
+                        <span className="material-symbols-outlined text-[14px] filled">star</span> {merchant.rating}
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{merchant.category} • {merchant.description}</p>
+                  <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400 font-medium">
+                    <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">schedule</span> {merchant.deliveryTime || '30-45 min'}</span>
+                    <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">local_shipping</span> {merchant.deliveryFee ? `$${merchant.deliveryFee}` : 'Envío Gratis'}</span>
+                  </div>
                 </div>
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Italiana • Pastas • Pizza</p>
-              <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400 font-medium">
-                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">schedule</span> 40 min</span>
-                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">local_shipping</span> $3.00</span>
-              </div>
-            </div>
-          </div>
-          <div className="w-full bg-white dark:bg-[#2f221d] rounded-2xl p-3 shadow-sm flex gap-4 items-center">
-            <div className="w-24 h-24 flex-shrink-0 rounded-xl bg-gray-100 dark:bg-gray-800 bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAVQAnic0ccusmBtyNZZMbCYA15ssaWy-UyIodx5uis9dYchPqh4nNKclKI5GjExhvL6m7KXp2E_LaT_GPj-LXxjYnbbrZhUIjplpyu_Xo_QisgcdFiH3xtwbzAFV8mS0xs3yDyFL4F7oHKs9uDjkGiEIg385Hn_igTqgqe7Zwi-ggpIQu7GCG3foUThTH4uMI_d7xBYaiCAYDEYKJSGWYDmeLntzK1qeENNgpLz2pToTUmEMzsW0t9Z7_tQe1mXzZ6iatP0V6j369A')" }}></div>
-            <div className="flex flex-col flex-1 gap-1">
-              <div className="flex justify-between items-start">
-                <h4 className="font-bold text-base">Pasta Palace</h4>
-                <div className="flex items-center gap-1 text-[#f46325] text-sm font-bold bg-[#f46325]/10 px-1.5 py-0.5 rounded-md">
-                  <span className="material-symbols-outlined text-[14px] filled">star</span> 4.9
-                </div>
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Italiana • Gourmet</p>
-              <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400 font-medium">
-                <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">schedule</span> 50 min</span>
-                <span className="flex items-center gap-1 text-green-600"><span className="material-symbols-outlined text-[16px]">local_shipping</span> Gratis</span>
-              </div>
-            </div>
-          </div>
+            ))
+          )}
         </section>
       </main>
-      
+
       <div className="fixed bottom-0 left-0 w-full p-4 z-50">
         <div className="bg-white dark:bg-[#2f221d]/95 backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-black/5 dark:border-white/5 flex justify-between items-center px-6 py-4">
           <button className="flex flex-col items-center gap-1 text-[#f46325]">
