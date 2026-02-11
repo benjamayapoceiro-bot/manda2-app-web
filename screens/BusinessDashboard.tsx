@@ -65,7 +65,7 @@ const BusinessDashboard: React.FC = () => {
         </div>
       </nav>
 
-      <main className="max-w-md mx-auto pb-24">
+      <main className="max-w-md mx-auto pb-32">
         <div className="p-4">
           <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-[#18181b] p-5 shadow-sm">
             <div className="flex flex-col gap-1">
